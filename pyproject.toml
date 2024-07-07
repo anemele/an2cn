@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "an2cn"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Jason Swift <anemele@outlook.com>"]
 readme = "README.md"
@@ -11,6 +11,9 @@ python = "^3.8"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.2.2"
+
+[tool.poetry.scripts]
+an2cn = "an2cn.cli:main"
 
 [build-system]
 requires = ["poetry-core"]
