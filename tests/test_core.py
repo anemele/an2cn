@@ -1,15 +1,15 @@
 import pytest
 
-from an2cn.core import Mode, convert
+from an2cn.core import convert
 
 
 def test_mode():
-    full_param = convert(1, Mode.LOW)
+    full_param = convert(1, "low")
     assert convert(1) == full_param
     assert convert(1, "low") == full_param
 
     with pytest.raises(ValueError):
-        convert(1, "Low")
+        convert(1, "LOW")  # type: ignore
 
 
 def test_positive_integer():
@@ -49,10 +49,10 @@ def test_positive_integer():
     ]
 
     for i, low, up, rmb, di in input_data:
-        assert convert(i, Mode.LOW) == low
-        assert convert(i, Mode.UP) == up
-        assert convert(i, Mode.RMB) == rmb
-        assert convert(i, Mode.DIRECT) == di
+        assert convert(i, "low") == low
+        assert convert(i, "up") == up
+        assert convert(i, "rmb") == rmb
+        assert convert(i, "direct") == di
 
 
 def test_negative_integer():
@@ -63,10 +63,10 @@ def test_negative_integer():
     ]
 
     for i, low, up, rmb, di in input_data:
-        assert convert(i, Mode.LOW) == low
-        assert convert(i, Mode.UP) == up
-        assert convert(i, Mode.RMB) == rmb
-        assert convert(i, Mode.DIRECT) == di
+        assert convert(i, "low") == low
+        assert convert(i, "up") == up
+        assert convert(i, "rmb") == rmb
+        assert convert(i, "direct") == di
 
 
 def test_float():
@@ -99,10 +99,10 @@ def test_float():
     ]
 
     for i, low, up, rmb, di in input_data:
-        assert convert(i, Mode.LOW) == low
-        assert convert(i, Mode.UP) == up
-        assert convert(i, Mode.RMB) == rmb
-        assert convert(i, Mode.DIRECT) == di
+        assert convert(i, "low") == low
+        assert convert(i, "up") == up
+        assert convert(i, "rmb") == rmb
+        assert convert(i, "direct") == di
 
 
 def test_str():
@@ -169,10 +169,10 @@ def test_str():
     ]
 
     for i, low, up, rmb, di in input_data:
-        assert convert(i, Mode.LOW) == low
-        assert convert(i, Mode.UP) == up
-        assert convert(i, Mode.RMB) == rmb
-        assert convert(i, Mode.DIRECT) == di
+        assert convert(i, "low") == low
+        assert convert(i, "up") == up
+        assert convert(i, "rmb") == rmb
+        assert convert(i, "direct") == di
 
 
 def test_error_input():

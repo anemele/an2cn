@@ -24,9 +24,8 @@ str 经过测试是数字
 但是对于人民币模式还是要取舍，包括小数截取两位、舍去尾零等。
 """
 
-from enum import Enum
 from functools import wraps
-from typing import Callable, Union
+from typing import Callable, Literal, Union
 
 from .conf import (
     NUMBER_LOW,
@@ -39,13 +38,13 @@ from .conf import (
 from .utils import float_to_str
 
 
-class Mode(Enum):
-    """low 小写数字，up 大写数字，rmb 人民币大写，direct 直接转化"""
-
-    LOW = "low"
-    UP = "up"
-    RMB = "rmb"
-    DIRECT = "direct"
+# class Mode(Enum):
+#     LOW = "low"
+#     UP = "up"
+#     RMB = "rmb"
+#     DIRECT = "direct"
+# low 小写数字，up 大写数字，rmb 人民币大写，direct 直接转化
+Mode = Literal["low", "up", "rmb", "direct"]
 
 
 def __direct_convert(data: str) -> str:
@@ -61,10 +60,10 @@ def __integer_convert(data: str, mode: Mode) -> str:
     data 是 \d+ 全匹配
     mode 只取 LOW 和 UP
     """
-    if mode == Mode.LOW:
+    if mode == "low":
         numeral_map = NUMBER_LOW_MAP
         unit_list = UNIT_ORDER_LOW
-    elif mode == Mode.UP:
+    elif mode == "up":
         numeral_map = NUMBER_UP_MAP
         unit_list = UNIT_ORDER_UP
     else:
@@ -113,9 +112,9 @@ def __decimal_convert(data: str, mode: Mode) -> str:
     data 是 \d+ 全匹配
     mode 只取 LOW 和 UP
     """
-    if mode == Mode.LOW:
+    if mode == "low":
         numeral_map = NUMBER_LOW_MAP
-    elif mode == Mode.UP:
+    elif mode == "up":
         numeral_map = NUMBER_UP_MAP
     else:
         raise ValueError(f"error mode: {mode}")
@@ -138,25 +137,25 @@ def _process_sign(func: Callable[[str, Mode], str]):
 
 @_process_sign
 def _convert_integer(data: str, mode: Mode) -> str:
-    if mode == Mode.DIRECT:
+    if mode == "direct":
         return __direct_convert(data)
-    if mode == Mode.RMB:
-        return __integer_convert(data, Mode.UP) + "元整"
+    if mode == "rmb":
+        return __integer_convert(data, "up") + "元整"
 
     return __integer_convert(data, mode)
 
 
 @_process_sign
 def _convert_float(data: str, mode: Mode) -> str:
-    if mode == Mode.DIRECT:
+    if mode == "direct":
         return __direct_convert(data)
 
     int_str, dec_str = data.split(".", 1)
 
-    if mode == Mode.RMB:
-        int_part = __integer_convert(int_str, Mode.UP).lstrip("零")
+    if mode == "rmb":
+        int_part = __integer_convert(int_str, "up").lstrip("零")
         # 人民币小数最多保留两位
-        dec_part = __decimal_convert(dec_str, Mode.UP)[:2].rstrip("零")
+        dec_part = __decimal_convert(dec_str, "up")[:2].rstrip("零")
 
         # 以下逻辑：
         # 如果小数部分为空且整数部分为空，则返回“零元整”
@@ -193,19 +192,13 @@ def _convert_float(data: str, mode: Mode) -> str:
     return f"{int_part}点{dec_part}"
 
 
-def convert(number: Union[str, int, float], mode: Union[Mode, str] = Mode.LOW) -> str:
+def convert(number: Union[str, int, float], mode: Mode = "low") -> str:
     """阿拉伯数字转中文数字
 
     :param number: 阿拉伯数字
     :param mode:
     :return: 中文数字
     """
-    if isinstance(mode, str):
-        try:
-            mode = Mode(mode)
-        except ValueError:
-            raise ValueError(f"不支持该模式：{mode}")
-
     if isinstance(number, int):
         return _convert_integer(str(number), mode)
     elif isinstance(number, float):

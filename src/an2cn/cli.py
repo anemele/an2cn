@@ -8,10 +8,10 @@ from .core import Mode, convert
 def main():
     parser = argparse.ArgumentParser(prog=__package__, description=__doc__)
     parser.add_argument("number", type=str, help="阿拉伯数字")
-    parser.add_argument("-m", "--mode", type=Mode, choices=Mode, default=Mode.LOW)
+    parser.add_argument("-m", "--mode", type=str, default="low")
 
     args = parser.parse_args()
-    print(args)
+    # print(args)
     # return
 
     number: str = args.number

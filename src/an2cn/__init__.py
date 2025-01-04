@@ -1,3 +1,3 @@
-from .core import Mode, convert
+from .core import convert
 
-__all__ = ["convert", "Mode"]
+__all__ = ["convert"]
